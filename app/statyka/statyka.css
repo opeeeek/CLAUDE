@@ -1,7 +1,7 @@
 /* BM-Win · Statyka – układ: dane po lewej, widok schematu po prawej */
 #p-work { padding: 0; display: none; overflow: hidden; }
 #p-work.on { display: block; }
-.work { display: grid; grid-template-columns: minmax(380px, 470px) minmax(0, 1fr); height: 100%; }
+.work { display: grid; grid-template-columns: 460px minmax(0, 1fr); height: 100%; }
 .wleft { overflow: auto; border-right: 1px solid var(--line); background: var(--panel); padding-bottom: 30px; }
 .wright { display: flex; flex-direction: column; min-width: 0; background: var(--panel2); }
 .vbar { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 6px 10px; border-bottom: 1px solid var(--line); background: var(--panel); }

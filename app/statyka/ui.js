@@ -161,7 +161,13 @@
     $('#p-combos').classList.toggle('on', t === 'combos');
     $('#p-report').classList.toggle('on', t === 'report');
     $('#p-report').classList.toggle('printme', true);
-    if (work) { if (t !== 'model' && ['node', 'member'].includes(ui.tool)) ui.tool = 'select'; if (t === 'model' && ui.tool === 'load') ui.tool = 'select'; buildViewBar(); renderLeft(); requestAnimationFrame(() => { sizeView(); renderView(); }); }
+    if (work) {
+      // pasek narzędzi ma różną wysokość w zakładkach – rysunek nie powinien „skakać”
+      const v0 = viewEl().getBoundingClientRect(), top0 = v0.height ? v0.top : null;
+      if (t !== 'model' && ['node', 'member'].includes(ui.tool)) ui.tool = 'select'; if (t === 'model' && ui.tool === 'load') ui.tool = 'select';
+      buildViewBar(); renderLeft();
+      requestAnimationFrame(() => { if (top0 !== null) ui.vs.cy += top0 - viewEl().getBoundingClientRect().top; sizeView(); renderView(); });
+    }
     if (t === 'combos') renderCombos();
     if (t === 'report') renderReport();
   }
