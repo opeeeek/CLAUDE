@@ -4,6 +4,6 @@
   "private": true,
   "description": "BM-Win – pakiet obliczeń statyczno-wytrzymałościowych wg Eurokodów (PL)",
   "scripts": {
-    "test": "node --test tests/"
+    "test": "node --test tests/*.test.js"
   }
 }
