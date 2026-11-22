@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rama2D – obliczenia statyczne ram płaskich</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="top">
+  <div class="brand">
+    <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="7" fill="#1e3a8a"/><path d="M8 25V10h16v15" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/><path d="M8 10 16 5l8 5" fill="none" stroke="#93c5fd" stroke-width="2" stroke-linejoin="round"/><path d="M5 27h6M21 27h6" stroke="#93c5fd" stroke-width="2"/></svg>
+    <div><b>Rama2D</b><span class="ver">1.0</span></div>
+  </div>
+  <nav class="tb">
+    <button data-act="new" title="Nowy projekt (Ctrl+N)">Nowy</button>
+    <button data-act="open" title="Otwórz (Ctrl+O)">Otwórz</button>
+    <button data-act="save" title="Zapisz (Ctrl+S)">Zapisz</button>
+    <button data-act="saveas">Zapisz jako</button>
+    <div class="dd"><button data-act="exmenu">Przykłady ▾</button><div class="menu" id="exMenu" hidden></div></div>
+    <span class="sep"></span>
+    <button data-act="undo" title="Cofnij (Ctrl+Z)" class="ico">↶</button>
+    <button data-act="redo" title="Ponów (Ctrl+Y)" class="ico">↷</button>
+    <span class="sep"></span>
+    <button data-act="openLoadsWin" title="Zestawienie wszystkich obciążeń – tabela (L)">☰ Obciążenia</button>
+    <button data-act="openSecWin" title="Przekroje i przypisanie przekrojów do prętów">☰ Przekroje</button>
+    <span class="sep"></span>
+    <button data-act="report" class="pri">Raport / druk</button>
+    <button data-act="help">Pomoc</button>
+  </nav>
+  <input id="projName" data-b="model.name" data-t="str" spellcheck="false" title="Nazwa projektu">
+  <div id="status"></div>
+</header>
+<main>
+  <aside id="left">
+    <nav class="tabs">
+      <button data-tab="model" class="on">Model</button>
+      <button data-tab="loads">Obciążenia</button>
+      <button data-tab="comb">Kombinacje</button>
+      <button data-tab="res">Wyniki</button>
+    </nav>
+    <div id="panel"></div>
+  </aside>
+  <section id="center">
+    <div id="ctool">
+      <div class="row">
+        <div class="grp tools">
+          <button data-tool="select" title="Zaznacz / przesuń węzeł (V)"><svg viewBox="0 0 20 20"><path d="M5 3l10 7-4.5 1 2.5 5-2 1-2.5-5L5 15z"/></svg>Zaznacz</button>
+          <button data-tool="node" title="Wstaw węzeł (W)"><svg viewBox="0 0 20 20"><rect x="7" y="7" width="6" height="6"/></svg>Węzeł</button>
+          <button data-tool="bar" title="Rysuj pręt – kliknij początek i koniec (P)"><svg viewBox="0 0 20 20"><path d="M3 16 17 4" stroke-width="2.4" fill="none"/><rect x="1" y="14" width="4" height="4"/><rect x="15" y="2" width="4" height="4"/></svg>Pręt</button>
+          <button data-tool="support" title="Podpora – kliknij węzeł (S)"><svg viewBox="0 0 20 20"><path d="M10 4 4 13h12z" fill="none" stroke-width="1.6"/><path d="M3 16h14" stroke-width="1.6"/></svg>Podpora</button>
+          <button data-tool="hinge" title="Przegub – kliknij koniec pręta lub węzeł (H)"><svg viewBox="0 0 20 20"><path d="M2 10h5M13 10h5" stroke-width="2.2"/><circle cx="10" cy="10" r="3.2" fill="none" stroke-width="1.6"/></svg>Przegub</button>
+          <button data-tool="sec" title="Przekrój – kliknij pręt, aby przypisać przekrój (K)"><svg viewBox="0 0 20 20"><path d="M3 4h14v3H11.5v6H17v3H3v-3h5.5V7H3z"/></svg>Przekrój</button>
+          <button data-tool="load" title="Obciążenie – kliknij pręt lub węzeł (O)"><svg viewBox="0 0 20 20"><path d="M3 15h14" stroke-width="2"/><path d="M5 4v8M10 4v8M15 4v8" stroke-width="1.3"/><path d="M3.5 10 5 12.5 6.5 10M8.5 10 10 12.5 11.5 10M13.5 10 15 12.5 16.5 10" fill="none" stroke-width="1.3"/></svg>Obciążenie</button>
+        </div>
+        <div class="grp"><button data-act="fit" title="Dopasuj widok (F)">⤢ Dopasuj</button></div>
+      </div>
+      <div class="row res">
+        <div class="grp" id="diagBtns">
+          <span class="seg">
+            <button data-diag="model" class="on" title="Schemat statyczny (1)">Schemat</button>
+            <button data-diag="loads" title="Wszystkie obciążenia naraz (2)">Obciążenia</button>
+            <button data-diag="secs" title="Przekroje prętów (3)">Przekroje</button>
+          </span>
+          <span class="seg">
+            <button data-diag="M" title="Momenty zginające (4)">M</button>
+            <button data-diag="V" title="Siły tnące (5)">T (V)</button>
+            <button data-diag="N" title="Siły normalne (6)">N</button>
+            <button data-diag="def" title="Deformacja / ugięcia (7)">Deformacja</button>
+            <button data-diag="R" title="Reakcje podporowe (8)">Reakcje</button>
+          </span>
+        </div>
+        <label class="mini grow">Wyniki dla <select id="viewSel"></select></label>
+      </div>
+      <div class="row opts">
+        <div class="grp">
+          <label class="mini">Siatka <select id="gridStep" title="Krok siatki i przyciągania"><option value="0.1">0,1 m</option><option value="0.25">0,25 m</option><option value="0.5" selected>0,5 m</option><option value="1">1 m</option><option value="0">bez</option></select></label>
+          <label class="chk" title="Rysowanie prętów tylko poziomo/pionowo (lub przytrzymaj Shift)"><input type="checkbox" id="ortho"> Orto</label>
+        </div>
+        <div class="grp">
+          <label class="chk"><input type="checkbox" id="vNums" checked> Numery</label>
+          <label class="chk"><input type="checkbox" id="vDims" checked> Wymiary</label>
+          <label class="mini" title="Obciążenia na widoku „Schemat”">Obciążenia na schemacie <select id="vLoads"><option value="active">aktywny przypadek</option><option value="all">wszystkie</option><option value="none">ukryj</option></select></label>
+        </div>
+        <div class="grp">
+          <span class="mini">Skala wykresów</span><button data-act="scaleDn" class="ico">−</button><button data-act="scaleUp" class="ico">+</button>
+          <label class="chk"><input type="checkbox" id="vVals" checked> Wartości</label>
+        </div>
+      </div>
+    </div>
+    <div id="cwrap">
+      <svg id="cv" xmlns="http://www.w3.org/2000/svg"></svg>
+      <svg id="ov" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div id="toolCard" hidden></div>
+      <div id="vlegend" hidden></div>
+      <div id="legend"></div>
+    </div>
+    <div id="cstat"><span id="cpos"></span><span id="chint"></span></div>
+  </section>
+  <aside id="right"><div id="props"></div></aside>
+</main>
+<div id="win" hidden><div class="wh"><b id="winTitle"></b><span class="sp"></span><button class="x" data-act="closeWin" title="Zamknij (Esc)">✕</button></div><div class="wb" id="winBody"></div></div>
+<div id="modal" hidden></div>
+<div id="toast" hidden></div>
+<div id="report" hidden></div>
+<script src="engine.js"></script>
+<script src="model.js"></script>
+<script src="draw.js"></script>
+<script src="report.js"></script>
+<script src="ui.js"></script>
+</body>
+</html>
